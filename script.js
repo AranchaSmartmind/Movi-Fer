@@ -1,8 +1,13 @@
 // Configuración de Supabase
 const SUPABASE_URL = 'https://siltfertxegddidlplw.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNpbHRmZXJ0eGVnZGRpZGxwbHciLCJyb2xlIjoiYW5vbiIsImlhdCI6MTczNDAyMTQ1MSwiZXhwIjoyMDQ5NTk3NDUxfQ.xVfIKI1CnAgmTFdJpK-gLZ__WJ9iB9q8BWBp7ypQ4cU';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNpbHRmZXJ0eGVnZGRpZGxwbHciLCJyb2xlIjoiYW5vbiIsImlhdCI6MTczNDAyMTQ1MSwiZXhwIjoyMDQ5NTk3NDUxfQ.xVfIKI1CnAgmTFdJpK-gLZ__WJ9iB9q8BWBp7ypQ4cU';
+const SUPABASE_SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNsdGxmZXJ0eGdkZGdkbGRscGx3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NTY1OTc4NywiZXhwIjoyMDgxMjM1Nzg3fQ.Cz9A5KA2AoBRfz-lia3IImvax69hh2xOzW_dtiSkSv8';
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+// Cliente para usuarios normales (subir fotos)
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Cliente para admin (ver y descargar fotos) - bypasea RLS
+const supabaseAdmin = window.supabase.createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
 // ============================================
 // VARIABLES GLOBALES
@@ -214,23 +219,21 @@ async function loadPhotos() {
         
         console.log('Iniciando carga de fotos...');
 
-        // Usar API REST directamente en lugar de .list() para evitar problemas de RLS
-        const response = await fetch(
-            `${SUPABASE_URL}/storage/v1/object/list/Fotos`,
-            {
-                headers: {
-                    'Authorization': `Bearer ${SUPABASE_KEY}`,
-                    'apikey': SUPABASE_KEY
-                }
-            }
-        );
+        // Usar cliente admin que bypasea RLS
+        const { data: folders, error: listError } = await supabaseAdmin
+            .storage
+            .from('Fotos')
+            .list('', {
+                limit: 100,
+                offset: 0,
+                sortBy: { column: 'name', order: 'asc' }
+            });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        if (listError) {
+            console.error('Error al listar carpetas:', listError);
+            throw listError;
         }
 
-        const folders = await response.json();
-        
         console.log('Carpetas encontradas:', folders);
 
         if (!folders || folders.length === 0) {
@@ -253,23 +256,21 @@ async function loadPhotos() {
 
             console.log('Procesando carpeta:', folder.name);
 
-            // Listar fotos dentro de cada carpeta usando API REST
-            const photosResponse = await fetch(
-                `${SUPABASE_URL}/storage/v1/object/list/Fotos/${folder.name}`,
-                {
-                    headers: {
-                        'Authorization': `Bearer ${SUPABASE_KEY}`,
-                        'apikey': SUPABASE_KEY
-                    }
-                }
-            );
+            // Usar cliente admin para listar fotos
+            const { data: photos, error: photosError } = await supabaseAdmin
+                .storage
+                .from('Fotos')
+                .list(folder.name, {
+                    limit: 1000,
+                    offset: 0,
+                    sortBy: { column: 'created_at', order: 'desc' }
+                });
 
-            if (!photosResponse.ok) {
-                console.error('Error listando fotos de', folder.name);
+            if (photosError) {
+                console.error('Error listando fotos de', folder.name, photosError);
                 continue;
             }
 
-            const photos = await photosResponse.json();
             console.log(`Fotos en ${folder.name}:`, photos);
 
             const imageFiles = photos.filter(file => 
@@ -287,7 +288,7 @@ async function loadPhotos() {
                 for (const file of imageFiles) {
                     const filePath = `${folder.name}/${file.name}`;
                     
-                    // Construir URL pública manualmente (evita problemas de RLS)
+                    // Construir URL pública manualmente
                     const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/Fotos/${filePath}`;
                     
                     console.log('URL generada:', publicUrl);
@@ -407,7 +408,8 @@ async function downloadAllPhotos() {
 
             for (const photo of client.photos) {
                 try {
-                    const { data, error } = await supabase
+                    // Usar cliente admin para descargar
+                    const { data, error } = await supabaseAdmin
                         .storage
                         .from('Fotos')
                         .download(photo.path);
@@ -471,7 +473,8 @@ async function confirmDeleteAll() {
         for (const client of allPhotos) {
             for (const photo of client.photos) {
                 try {
-                    const { error } = await supabase
+                    // Usar cliente admin para borrar
+                    const { error } = await supabaseAdmin
                         .storage
                         .from('Fotos')
                         .remove([photo.path]);
