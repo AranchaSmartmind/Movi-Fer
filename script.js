@@ -1,6 +1,6 @@
 // Configuración de Supabase
-const SUPABASE_URL = 'https://siltfertxegddidlplw.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNpbHRmZXJ0eGVnZGRpZGxwbHciLCJyb2xlIjoiYW5vbiIsImlhdCI6MTczNDAyMTQ1MSwiZXhwIjoyMDQ5NTk3NDUxfQ.xVfIKI1CnAgmTFdJpK-gLZ__WJ9iB9q8BWBp7ypQ4cU';
+const SUPABASE_URL = 'https://sltlfertxgddgdldlplw.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNsdGxmZXJ0eGdkZGdkbGRscGx3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU2NTk3ODcsImV4cCI6MjA4MTIzNTc4N30.-Czl0QKIK9ZPEafRXHeN5fL4tQqRy5TgAvfWpZLOWD8';
 const SUPABASE_SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNsdGxmZXJ0eGdkZGdkbGRscGx3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NTY1OTc4NywiZXhwIjoyMDgxMjM1Nzg3fQ.Cz9A5KA2AoBRfz-lia3IImvax69hh2xOzW_dtiSkSv8';
 
 // Cliente para usuarios normales (subir fotos)
