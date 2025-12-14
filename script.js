@@ -214,20 +214,23 @@ async function loadPhotos() {
         
         console.log('Iniciando carga de fotos...');
 
-        const { data: folders, error: listError } = await supabase
-            .storage
-            .from('Fotos')
-            .list('', {
-                limit: 100,
-                offset: 0,
-                sortBy: { column: 'name', order: 'asc' }
-            });
+        // Usar API REST directamente en lugar de .list() para evitar problemas de RLS
+        const response = await fetch(
+            `${SUPABASE_URL}/storage/v1/object/list/Fotos`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${SUPABASE_KEY}`,
+                    'apikey': SUPABASE_KEY
+                }
+            }
+        );
 
-        if (listError) {
-            console.error('Error al listar carpetas:', listError);
-            throw listError;
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
 
+        const folders = await response.json();
+        
         console.log('Carpetas encontradas:', folders);
 
         if (!folders || folders.length === 0) {
@@ -245,24 +248,28 @@ async function loadPhotos() {
         let totalPhotos = 0;
 
         for (const folder of folders) {
-            if (!folder.name || folder.id) continue;
+            // Ignorar archivos sueltos (los archivos tienen metadata, las carpetas no)
+            if (!folder.name || folder.metadata) continue;
 
             console.log('Procesando carpeta:', folder.name);
 
-            const { data: photos, error: photosError } = await supabase
-                .storage
-                .from('Fotos')
-                .list(folder.name, {
-                    limit: 1000,
-                    offset: 0,
-                    sortBy: { column: 'created_at', order: 'desc' }
-                });
+            // Listar fotos dentro de cada carpeta usando API REST
+            const photosResponse = await fetch(
+                `${SUPABASE_URL}/storage/v1/object/list/Fotos/${folder.name}`,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                        'apikey': SUPABASE_KEY
+                    }
+                }
+            );
 
-            if (photosError) {
-                console.error('Error listando fotos de', folder.name, photosError);
+            if (!photosResponse.ok) {
+                console.error('Error listando fotos de', folder.name);
                 continue;
             }
 
+            const photos = await photosResponse.json();
             console.log(`Fotos en ${folder.name}:`, photos);
 
             const imageFiles = photos.filter(file => 
@@ -275,18 +282,22 @@ async function loadPhotos() {
             );
 
             if (imageFiles.length > 0) {
-                const photosWithUrls = imageFiles.map(file => {
-                    const { data: urlData } = supabase
-                        .storage
-                        .from('Fotos')
-                        .getPublicUrl(`${folder.name}/${file.name}`);
+                const photosWithUrls = [];
+                
+                for (const file of imageFiles) {
+                    const filePath = `${folder.name}/${file.name}`;
                     
-                    return {
+                    // Construir URL pública manualmente (evita problemas de RLS)
+                    const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/Fotos/${filePath}`;
+                    
+                    console.log('URL generada:', publicUrl);
+                    
+                    photosWithUrls.push({
                         name: file.name,
-                        url: urlData.publicUrl,
-                        path: `${folder.name}/${file.name}`
-                    };
-                });
+                        url: publicUrl,
+                        path: filePath
+                    });
+                }
 
                 allPhotos.push({
                     clientName: folder.name,
