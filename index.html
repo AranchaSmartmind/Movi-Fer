@@ -3,23 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#4F46E5">
-    <title>Subir Fotos - Impresión</title>
-    <link rel="manifest" href="manifest.json">
+    <title>Subir Fotos - Movi-Fer</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
         }
-
         .container {
             max-width: 600px;
             margin: 0 auto;
@@ -28,128 +24,81 @@
             padding: 30px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
-
         h1 {
             color: #4F46E5;
             text-align: center;
             margin-bottom: 10px;
-            font-size: 28px;
         }
-
         .subtitle {
             text-align: center;
             color: #6B7280;
             margin-bottom: 30px;
             font-size: 14px;
         }
-
         .input-group {
             margin-bottom: 25px;
         }
-
         label {
             display: block;
             color: #374151;
             font-weight: 600;
             margin-bottom: 8px;
-            font-size: 14px;
         }
-
         input[type="text"] {
             width: 100%;
             padding: 12px 15px;
             border: 2px solid #E5E7EB;
             border-radius: 10px;
             font-size: 16px;
-            transition: border-color 0.3s;
         }
-
         input[type="text"]:focus {
             outline: none;
             border-color: #4F46E5;
         }
-
         .upload-area {
             border: 3px dashed #D1D5DB;
             border-radius: 15px;
             padding: 40px 20px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s;
             background: #F9FAFB;
         }
-
         .upload-area:hover {
             border-color: #4F46E5;
             background: #EEF2FF;
         }
-
-        .upload-area.dragover {
-            border-color: #4F46E5;
-            background: #EEF2FF;
-            transform: scale(1.02);
-        }
-
-        .upload-icon {
-            font-size: 48px;
-            margin-bottom: 15px;
-        }
-
-        .upload-text {
-            color: #6B7280;
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
-
-        .upload-hint {
-            color: #9CA3AF;
-            font-size: 12px;
-        }
-
         input[type="file"] {
             display: none;
         }
-
         .preview-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
             gap: 10px;
             margin-top: 20px;
-            max-height: 300px;
-            overflow-y: auto;
         }
-
         .preview-item {
             position: relative;
             aspect-ratio: 1;
             border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-
         .preview-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-
-        .preview-item .remove-btn {
+        .preview-item button {
             position: absolute;
             top: 5px;
             right: 5px;
-            background: rgba(239, 68, 68, 0.9);
+            background: #EF4444;
             color: white;
             border: none;
             border-radius: 50%;
             width: 24px;
             height: 24px;
             cursor: pointer;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
-
         .btn {
             width: 100%;
             padding: 15px;
@@ -158,48 +107,34 @@
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
             margin-top: 20px;
         }
-
         .btn-primary {
             background: #4F46E5;
             color: white;
         }
-
         .btn-primary:hover:not(:disabled) {
             background: #4338CA;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
         }
-
         .btn-primary:disabled {
             background: #9CA3AF;
             cursor: not-allowed;
         }
-
-        .success-message {
-            background: #10B981;
-            color: white;
+        .message {
             padding: 15px;
             border-radius: 10px;
             text-align: center;
             margin-top: 20px;
             display: none;
-            animation: slideDown 0.3s ease;
         }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .success {
+            background: #10B981;
+            color: white;
         }
-
+        .error {
+            background: #EF4444;
+            color: white;
+        }
         .admin-btn {
             position: fixed;
             bottom: 20px;
@@ -213,15 +148,8 @@
             font-size: 24px;
             cursor: pointer;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            transition: all 0.3s;
             z-index: 1000;
         }
-
-        .admin-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
-        }
-
         .admin-panel {
             display: none;
             position: fixed;
@@ -234,7 +162,6 @@
             overflow-y: auto;
             padding: 20px;
         }
-
         .admin-content {
             max-width: 1200px;
             margin: 0 auto;
@@ -242,14 +169,12 @@
             border-radius: 20px;
             padding: 30px;
         }
-
         .admin-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
         }
-
         .close-btn {
             background: #EF4444;
             color: white;
@@ -257,16 +182,13 @@
             padding: 10px 20px;
             border-radius: 8px;
             cursor: pointer;
-            font-weight: 600;
         }
-
         .stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
             margin-bottom: 30px;
         }
-
         .stat-card {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -274,32 +196,21 @@
             border-radius: 15px;
             text-align: center;
         }
-
         .stat-number {
             font-size: 36px;
             font-weight: bold;
-            margin-bottom: 5px;
         }
-
-        .stat-label {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-
         .photos-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 15px;
             margin-top: 20px;
         }
-
         .photo-card {
             background: #F9FAFB;
             border-radius: 10px;
             padding: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-
         .photo-card img {
             width: 100%;
             aspect-ratio: 1;
@@ -307,378 +218,279 @@
             border-radius: 8px;
             margin-bottom: 8px;
         }
-
-        .photo-info {
-            font-size: 12px;
-            color: #6B7280;
-        }
-
         .photo-client {
             font-weight: 600;
             color: #4F46E5;
-            margin-bottom: 3px;
+            font-size: 12px;
         }
-
         .btn-download {
             background: #10B981;
             color: white;
-            margin-top: 10px;
         }
-
-        .btn-download:hover {
-            background: #059669;
-        }
-
         .btn-clear {
             background: #EF4444;
             color: white;
-            margin-top: 10px;
-        }
-
-        .btn-clear:hover {
-            background: #DC2626;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #9CA3AF;
-        }
-
-        .empty-state-icon {
-            font-size: 64px;
-            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
-    <!-- Vista Cliente -->
-    <div class="container" id="clientView">
+    <div class="container">
         <h1>📸 Subir Fotos</h1>
         <p class="subtitle">Envía tus fotos para imprimir</p>
 
         <div class="input-group">
-            <label for="clientName">Tu nombre</label>
-            <input type="text" id="clientName" placeholder="Ej: María García" required>
+            <label>Tu nombre</label>
+            <input type="text" id="clientName" placeholder="Ej: María García">
         </div>
 
         <div class="upload-area" id="uploadArea">
-            <div class="upload-icon">📁</div>
-            <div class="upload-text">Arrastra tus fotos aquí</div>
-            <div class="upload-hint">o haz clic para seleccionar (JPG, PNG, HEIC)</div>
+            <div style="font-size:48px;margin-bottom:15px;">📁</div>
+            <div>Arrastra tus fotos aquí o haz clic para seleccionar</div>
             <input type="file" id="fileInput" accept="image/*" multiple>
         </div>
 
         <div class="preview-grid" id="previewGrid"></div>
 
-        <button class="btn btn-primary" id="uploadBtn" disabled>
-            Enviar Fotos
-        </button>
-
-        <div class="success-message" id="successMessage">
-            ✅ Fotos enviadas correctamente
-        </div>
+        <button class="btn btn-primary" id="uploadBtn" disabled>Enviar Fotos</button>
+        <div class="message success" id="successMsg">✅ Fotos enviadas correctamente</div>
+        <div class="message error" id="errorMsg"></div>
     </div>
 
-    <!-- Botón Admin -->
-    <button class="admin-btn" id="adminBtn" title="Panel de Administración">⚙️</button>
+    <button class="admin-btn" id="adminBtn">⚙️</button>
 
-    <!-- Panel Admin -->
     <div class="admin-panel" id="adminPanel">
         <div class="admin-content">
             <div class="admin-header">
                 <h1>🎛️ Panel de Administración</h1>
-                <button class="close-btn" id="closeAdminBtn">✕ Cerrar</button>
+                <button class="close-btn" id="closeBtn">✕ Cerrar</button>
             </div>
 
             <div class="stats">
                 <div class="stat-card">
                     <div class="stat-number" id="totalPhotos">0</div>
-                    <div class="stat-label">Total de Fotos</div>
+                    <div>Total de Fotos</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-number" id="totalClients">0</div>
-                    <div class="stat-label">Clientes</div>
+                    <div>Clientes</div>
                 </div>
             </div>
 
-            <button class="btn btn-download" id="downloadAllBtn">
-                ⬇️ Descargar Todas las Fotos (ZIP)
-            </button>
-
-            <button class="btn btn-clear" id="clearAllBtn">
-                🗑️ Borrar Todas las Fotos
-            </button>
+            <button class="btn btn-download" id="downloadBtn">⬇️ Descargar Todas (ZIP)</button>
+            <button class="btn btn-clear" id="clearBtn">🗑️ Borrar Todas</button>
 
             <div id="photosContainer"></div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script>
-        // Variables globales
-        let selectedFiles = [];
-        const STORAGE_KEY = 'photosData';
+        const supabase = window.supabase.createClient(
+            'https://sltlfertxgddgdldlplw.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNsdGxmZXJ0eGdkZGdkbGRscGx3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU2NTk3ODcsImV4cCI6MjA4MTIzNTc4N30.-Czl0QKIK9ZPEafRXHeN5fL4tQqRy5TgAvfWpZLOWD8'
+        );
 
-        // Elementos DOM
+        let files = [];
         const uploadArea = document.getElementById('uploadArea');
         const fileInput = document.getElementById('fileInput');
-        const clientNameInput = document.getElementById('clientName');
+        const clientName = document.getElementById('clientName');
         const previewGrid = document.getElementById('previewGrid');
         const uploadBtn = document.getElementById('uploadBtn');
-        const successMessage = document.getElementById('successMessage');
-        const adminBtn = document.getElementById('adminBtn');
-        const adminPanel = document.getElementById('adminPanel');
-        const closeAdminBtn = document.getElementById('closeAdminBtn');
-        const downloadAllBtn = document.getElementById('downloadAllBtn');
-        const clearAllBtn = document.getElementById('clearAllBtn');
-        const photosContainer = document.getElementById('photosContainer');
 
-        // Eventos de drag & drop
-        uploadArea.addEventListener('click', () => fileInput.click());
-        
-        uploadArea.addEventListener('dragover', (e) => {
+        uploadArea.onclick = () => fileInput.click();
+        uploadArea.ondragover = (e) => { e.preventDefault(); uploadArea.style.borderColor = '#4F46E5'; };
+        uploadArea.ondragleave = () => uploadArea.style.borderColor = '#D1D5DB';
+        uploadArea.ondrop = (e) => {
             e.preventDefault();
-            uploadArea.classList.add('dragover');
-        });
+            uploadArea.style.borderColor = '#D1D5DB';
+            addFiles(Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/')));
+        };
+        fileInput.onchange = (e) => addFiles(Array.from(e.target.files));
 
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.classList.remove('dragover');
-        });
-
-        uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadArea.classList.remove('dragover');
-            const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
-            handleFiles(files);
-        });
-
-        fileInput.addEventListener('change', (e) => {
-            handleFiles(Array.from(e.target.files));
-        });
-
-        // Manejar archivos seleccionados
-        function handleFiles(files) {
-            selectedFiles = [...selectedFiles, ...files];
+        function addFiles(newFiles) {
+            files = [...files, ...newFiles];
             updatePreview();
-            checkUploadButton();
+            checkButton();
         }
 
-        // Actualizar vista previa
         function updatePreview() {
             previewGrid.innerHTML = '';
-            selectedFiles.forEach((file, index) => {
+            files.forEach((file, i) => {
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     const div = document.createElement('div');
                     div.className = 'preview-item';
-                    div.innerHTML = `
-                        <img src="${e.target.result}" alt="Preview">
-                        <button class="remove-btn" onclick="removeFile(${index})">×</button>
-                    `;
+                    div.innerHTML = `<img src="${e.target.result}"><button onclick="removeFile(${i})">×</button>`;
                     previewGrid.appendChild(div);
                 };
                 reader.readAsDataURL(file);
             });
         }
 
-        // Eliminar archivo de la vista previa
-        function removeFile(index) {
-            selectedFiles.splice(index, 1);
+        window.removeFile = (i) => {
+            files.splice(i, 1);
             updatePreview();
-            checkUploadButton();
+            checkButton();
+        };
+
+        function checkButton() {
+            uploadBtn.disabled = !(clientName.value.trim() && files.length > 0);
         }
+        clientName.oninput = checkButton;
 
-        // Verificar si se puede habilitar el botón de subir
-        function checkUploadButton() {
-            const hasName = clientNameInput.value.trim() !== '';
-            const hasFiles = selectedFiles.length > 0;
-            uploadBtn.disabled = !(hasName && hasFiles);
-        }
-
-        clientNameInput.addEventListener('input', checkUploadButton);
-
-        // Subir fotos
-        uploadBtn.addEventListener('click', async () => {
-            const clientName = clientNameInput.value.trim();
-            if (!clientName || selectedFiles.length === 0) return;
+        uploadBtn.onclick = async () => {
+            const name = clientName.value.trim();
+            if (!name || !files.length) return;
 
             uploadBtn.disabled = true;
             uploadBtn.textContent = 'Subiendo...';
+            document.getElementById('errorMsg').style.display = 'none';
 
             try {
-                const photosData = getPhotosData();
-                
-                for (const file of selectedFiles) {
-                    const reader = new FileReader();
-                    const photoData = await new Promise((resolve) => {
-                        reader.onload = (e) => {
-                            resolve({
-                                client: clientName,
-                                data: e.target.result,
-                                filename: file.name,
-                                timestamp: new Date().toISOString(),
-                                date: new Date().toLocaleDateString('es-ES'),
-                                time: new Date().toLocaleTimeString('es-ES')
-                            });
-                        };
-                        reader.readAsDataURL(file);
-                    });
-                    
-                    photosData.push(photoData);
+                const timestamp = Date.now();
+                for (let i = 0; i < files.length; i++) {
+                    const fileName = `${name}/${timestamp}_${i}_${files[i].name}`;
+                    const { error } = await supabase.storage.from('Fotos').upload(fileName, files[i]);
+                    if (error) throw error;
                 }
 
-                savePhotosData(photosData);
+                document.getElementById('successMsg').style.display = 'block';
+                setTimeout(() => document.getElementById('successMsg').style.display = 'none', 3000);
 
-                // Mostrar mensaje de éxito
-                successMessage.style.display = 'block';
-                setTimeout(() => {
-                    successMessage.style.display = 'none';
-                }, 3000);
-
-                // Resetear formulario
-                selectedFiles = [];
+                files = [];
                 previewGrid.innerHTML = '';
-                clientNameInput.value = '';
+                clientName.value = '';
                 fileInput.value = '';
                 uploadBtn.textContent = 'Enviar Fotos';
-                checkUploadButton();
-
+                checkButton();
             } catch (error) {
-                alert('Error al subir las fotos. Por favor, intenta de nuevo.');
+                console.error('Error:', error);
+                const errorMsg = document.getElementById('errorMsg');
+                errorMsg.textContent = 'Error al subir. Intenta de nuevo.';
+                errorMsg.style.display = 'block';
                 uploadBtn.disabled = false;
                 uploadBtn.textContent = 'Enviar Fotos';
             }
-        });
+        };
 
-        // Funciones de almacenamiento
-        function getPhotosData() {
-            const data = localStorage.getItem(STORAGE_KEY);
-            return data ? JSON.parse(data) : [];
-        }
+        document.getElementById('adminBtn').onclick = () => {
+            loadAdmin();
+            document.getElementById('adminPanel').style.display = 'block';
+        };
 
-        function savePhotosData(data) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-        }
+        document.getElementById('closeBtn').onclick = () => {
+            document.getElementById('adminPanel').style.display = 'none';
+        };
 
-        // Panel de administración
-        adminBtn.addEventListener('click', () => {
-            loadAdminPanel();
-            adminPanel.style.display = 'block';
-        });
-
-        closeAdminBtn.addEventListener('click', () => {
-            adminPanel.style.display = 'none';
-        });
-
-        function loadAdminPanel() {
-            const photos = getPhotosData();
-            
-            // Actualizar estadísticas
-            document.getElementById('totalPhotos').textContent = photos.length;
-            const uniqueClients = [...new Set(photos.map(p => p.client))];
-            document.getElementById('totalClients').textContent = uniqueClients.length;
-
-            // Mostrar fotos
-            if (photos.length === 0) {
-                photosContainer.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📭</div>
-                        <p>No hay fotos todavía</p>
-                    </div>
-                `;
-                return;
-            }
-
-            photosContainer.innerHTML = '<h3 style="margin: 30px 0 15px 0; color: #374151;">Fotos Recibidas</h3>';
-            const grid = document.createElement('div');
-            grid.className = 'photos-grid';
-
-            photos.forEach((photo, index) => {
-                const card = document.createElement('div');
-                card.className = 'photo-card';
-                card.innerHTML = `
-                    <img src="${photo.data}" alt="${photo.filename}">
-                    <div class="photo-info">
-                        <div class="photo-client">${photo.client}</div>
-                        <div>${photo.date} - ${photo.time}</div>
-                        <div style="font-size: 10px; margin-top: 3px;">${photo.filename}</div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-
-            photosContainer.appendChild(grid);
-        }
-
-        // Descargar todas las fotos en ZIP
-        downloadAllBtn.addEventListener('click', async () => {
-            const photos = getPhotosData();
-            if (photos.length === 0) {
-                alert('No hay fotos para descargar');
-                return;
-            }
-
-            downloadAllBtn.textContent = 'Generando ZIP...';
-            downloadAllBtn.disabled = true;
-
+        async function loadAdmin() {
             try {
-                const zip = new JSZip();
+                const { data: folders } = await supabase.storage.from('Fotos').list('', { limit: 1000 });
+                const allFiles = [];
 
-                // Agrupar por cliente
-                const clientGroups = {};
-                photos.forEach(photo => {
-                    if (!clientGroups[photo.client]) {
-                        clientGroups[photo.client] = [];
+                for (const folder of folders || []) {
+                    if (folder.id) {
+                        const { data: files } = await supabase.storage.from('Fotos').list(folder.name);
+                        files?.forEach(f => {
+                            if (f.name) allFiles.push({ ...f, client: folder.name, fullPath: `${folder.name}/${f.name}` });
+                        });
                     }
-                    clientGroups[photo.client].push(photo);
-                });
-
-                // Añadir fotos al ZIP organizadas por cliente
-                for (const [client, clientPhotos] of Object.entries(clientGroups)) {
-                    const folderName = client.replace(/[^a-z0-9]/gi, '_');
-                    const folder = zip.folder(folderName);
-                    
-                    clientPhotos.forEach((photo, index) => {
-                        const base64Data = photo.data.split(',')[1];
-                        const extension = photo.filename.split('.').pop();
-                        const filename = `${index + 1}_${photo.filename}`;
-                        folder.file(filename, base64Data, {base64: true});
-                    });
                 }
 
-                // Generar y descargar ZIP
+                document.getElementById('totalPhotos').textContent = allFiles.length;
+                document.getElementById('totalClients').textContent = [...new Set(allFiles.map(f => f.client))].length;
+
+                const container = document.getElementById('photosContainer');
+                if (!allFiles.length) {
+                    container.innerHTML = '<div style="text-align:center;padding:60px;color:#9CA3AF;">📭<br>No hay fotos todavía</div>';
+                    return;
+                }
+
+                container.innerHTML = '<h3 style="margin:30px 0 15px;color:#374151;">Fotos Recibidas</h3>';
+                const grid = document.createElement('div');
+                grid.className = 'photos-grid';
+
+                allFiles.forEach(photo => {
+                    const { data: { publicUrl } } = supabase.storage.from('Fotos').getPublicUrl(photo.fullPath);
+                    const card = document.createElement('div');
+                    card.className = 'photo-card';
+                    card.innerHTML = `<img src="${publicUrl}"><div class="photo-client">${photo.client}</div>`;
+                    grid.appendChild(card);
+                });
+
+                container.appendChild(grid);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        document.getElementById('downloadBtn').onclick = async () => {
+            const btn = document.getElementById('downloadBtn');
+            btn.textContent = 'Generando ZIP...';
+            btn.disabled = true;
+
+            try {
+                const { data: folders } = await supabase.storage.from('Fotos').list('');
+                const zip = new JSZip();
+
+                for (const folder of folders || []) {
+                    if (folder.id) {
+                        const { data: files } = await supabase.storage.from('Fotos').list(folder.name);
+                        const folderZip = zip.folder(folder.name);
+
+                        for (const file of files || []) {
+                            if (file.name) {
+                                const { data: blob } = await supabase.storage.from('Fotos').download(`${folder.name}/${file.name}`);
+                                if (blob) folderZip.file(file.name, blob);
+                            }
+                        }
+                    }
+                }
+
                 const content = await zip.generateAsync({type: 'blob'});
                 const url = URL.createObjectURL(content);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `fotos_impresion_${new Date().toISOString().split('T')[0]}.zip`;
+                a.download = `fotos_${new Date().toISOString().split('T')[0]}.zip`;
                 a.click();
                 URL.revokeObjectURL(url);
 
-                downloadAllBtn.textContent = '⬇️ Descargar Todas las Fotos (ZIP)';
-                downloadAllBtn.disabled = false;
-
+                btn.textContent = '⬇️ Descargar Todas (ZIP)';
+                btn.disabled = false;
             } catch (error) {
-                alert('Error al generar el ZIP');
-                downloadAllBtn.textContent = '⬇️ Descargar Todas las Fotos (ZIP)';
-                downloadAllBtn.disabled = false;
+                alert('Error al generar ZIP');
+                btn.textContent = '⬇️ Descargar Todas (ZIP)';
+                btn.disabled = false;
             }
-        });
+        };
 
-        // Borrar todas las fotos
-        clearAllBtn.addEventListener('click', () => {
-            if (confirm('¿Estás seguro de que quieres borrar todas las fotos? Esta acción no se puede deshacer.')) {
-                localStorage.removeItem(STORAGE_KEY);
-                loadAdminPanel();
-                alert('Todas las fotos han sido borradas');
+        document.getElementById('clearBtn').onclick = async () => {
+            if (!confirm('¿Borrar todas las fotos?')) return;
+
+            const btn = document.getElementById('clearBtn');
+            btn.textContent = 'Borrando...';
+            btn.disabled = true;
+
+            try {
+                const { data: folders } = await supabase.storage.from('Fotos').list('');
+                for (const folder of folders || []) {
+                    if (folder.id) {
+                        const { data: files } = await supabase.storage.from('Fotos').list(folder.name);
+                        const paths = files?.filter(f => f.name).map(f => `${folder.name}/${f.name}`) || [];
+                        if (paths.length) await supabase.storage.from('Fotos').remove(paths);
+                    }
+                }
+
+                loadAdmin();
+                alert('Fotos borradas');
+                btn.textContent = '🗑️ Borrar Todas';
+                btn.disabled = false;
+            } catch (error) {
+                alert('Error al borrar');
+                btn.textContent = '🗑️ Borrar Todas';
+                btn.disabled = false;
             }
-        });
-
-        // Registrar Service Worker para PWA
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').catch(() => {});
-        }
+        };
     </script>
 </body>
 </html>
